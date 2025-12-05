@@ -306,13 +306,19 @@ export default function MedidaFacil() {
       {/* Main Content */}
       <main className="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
         <div className="p-4 sm:p-6 lg:p-8">
-          {currentScreen === "dashboard" && <Dashboard theme={theme} showNotification={showNotification} userId={user?.id} />}
-          {currentScreen === "gallery" && <Gallery theme={theme} showNotification={showNotification} userId={user?.id} />}
-          {currentScreen === "editor" && <Editor theme={theme} showNotification={showNotification} userId={user?.id} />}
-          {currentScreen === "comments" && <Comments theme={theme} showNotification={showNotification} userId={user?.id} userName={user?.email?.split("@")[0]} />}
-          {currentScreen === "projects" && <Projects theme={theme} showNotification={showNotification} userId={user?.id} />}
-          {currentScreen === "tasks" && <Tasks theme={theme} showNotification={showNotification} userId={user?.id} />}
-          {currentScreen === "notifications" && <Notifications theme={theme} showNotification={showNotification} userId={user?.id} />}
+          {!user?.id ? (
+            <div className="text-center py-12">Carregando...</div>
+          ) : (
+            <>
+              {currentScreen === "dashboard" && <Dashboard theme={theme} showNotification={showNotification} userId={user.id} />}
+              {currentScreen === "gallery" && <Gallery theme={theme} showNotification={showNotification} userId={user.id} />}
+              {currentScreen === "editor" && <Editor theme={theme} showNotification={showNotification} userId={user.id} />}
+              {currentScreen === "comments" && <Comments theme={theme} showNotification={showNotification} userId={user.id} userName={user?.email?.split("@")[0]} />}
+              {currentScreen === "projects" && <Projects theme={theme} showNotification={showNotification} userId={user.id} />}
+              {currentScreen === "tasks" && <Tasks theme={theme} showNotification={showNotification} userId={user.id} />}
+              {currentScreen === "notifications" && <Notifications theme={theme} showNotification={showNotification} userId={user.id} />}
+            </>
+          )}
         </div>
       </main>
     </div>
@@ -325,10 +331,14 @@ function Dashboard({ theme, showNotification, userId }: { theme: "dark" | "light
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
+    if (userId) {
+      loadData();
+    }
   }, [userId]);
 
   const loadData = async () => {
+    if (!userId) return;
+    
     const { data: projectsData } = await supabase
       .from("projects")
       .select("*")
@@ -822,10 +832,14 @@ function Projects({ theme, showNotification, userId }: { theme: "dark" | "light"
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadProjects();
+    if (userId) {
+      loadProjects();
+    }
   }, [userId]);
 
   const loadProjects = async () => {
+    if (!userId) return;
+    
     const { data } = await supabase
       .from("projects")
       .select("*")
@@ -943,10 +957,14 @@ function Tasks({ theme, showNotification, userId }: { theme: "dark" | "light"; s
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadTasks();
+    if (userId) {
+      loadTasks();
+    }
   }, [userId]);
 
   const loadTasks = async () => {
+    if (!userId) return;
+    
     const { data } = await supabase
       .from("tasks")
       .select("*")
